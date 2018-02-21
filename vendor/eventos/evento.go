@@ -16,6 +16,14 @@ var FACEBOOK_API_URL = "http://graph.facebook.com"
 type Evento struct {
   Description string `json:description`
   Name string `json:name`
+  StartTime string `json:start_time`
+  EndTime string `json:end_time`
+  Id string `json:id`
+  Url string
+}
+
+type Data struct {
+  Eventos []Evento `json:eventos`
 }
 
 type Erro struct {
@@ -59,15 +67,11 @@ func trataRespostaFacebook(statusCode int, body []byte) (interface{}, interface{
 }
 
 func trataSucesso(body []byte) (interface{}, interface{}){
-  var jsonResponse map[string][]map[string]string
-  json.Unmarshal([]byte(body), &jsonResponse)
-  var eventos []Evento
-  for _, e := range jsonResponse["data"] {
-    evento := converteMapParaEvento(e)
-    eventos = append(eventos, evento)
-  }
-  log.Println(fmt.Sprintf("Eventos: %v", eventos))
-  return eventos, nil
+  eventos := &Data{}
+  bodyReader := bytes.NewReader(body)
+  json.NewDecoder(bodyReader).Decode(&eventos)
+  log.Println(fmt.Sprintf("Eventos: %v", eventos.Eventos))
+  return eventos.Eventos, nil
 }
 
 func converteMapParaEvento(eventoMap map[string]string) (evento Evento) {

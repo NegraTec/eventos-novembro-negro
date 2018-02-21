@@ -29,7 +29,7 @@ func TestObtemDiferenteDe200(t *testing.T) {
 func TestObtem200(t *testing.T) {
   defer gock.Off()
 
-  dataEvento := []byte(`{"data": [{"description": "algo", "name": "algum nome"}]}`)
+  dataEvento := []byte(`{"data": [{"description": "algo", "name": "algum nome", "start_time": "2017-11-23T19:00:00-0300", "end_time": "2017-11-23T22:00:00-0300", "id": "1976363969278386"}]}`)
   gock.New("http://graph.facebook.com").
     Get("/search").
     Reply(200).
@@ -42,7 +42,7 @@ func TestObtem200(t *testing.T) {
 	}
 
   var expectedEventos []eventos.Evento
-  expectedEvento := eventos.Evento{Description: "algo", Name: "algum nome"}
+  expectedEvento := eventos.Evento{Description: "algo", Name: "algum nome", StartTime: "2017-11-23T19:00:00-0300", EndTime: "2017-11-23T22:00:00-0300", Id: "1976363969278386", Url: ""}
   expectedEventos = append(expectedEventos, expectedEvento)
 
   assert.Equal(t, expectedEventos, resultado)
